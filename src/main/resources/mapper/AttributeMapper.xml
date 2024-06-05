@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.csoe.dao.AttributeDao">
+<!-- List<Attribute> getAllAttributeByCategoryId(@Param("id") Integer id,
+                                                @Param("sel") String sel);-->
+    <select id="getAllAttributeByCategoryId" resultMap="getAllAttributeByCategoryId">
+        SELECT attr_id,attr_name,cat_id,attr_sel,attr_write,attr_vals
+        FROM sp_attribute
+        WHERE cat_id = #{id}  AND attr_sel = #{sel}
+    </select>
+    <resultMap id="getAllAttributeByCategoryId" type="Attribute">
+        <id property="attr_id" column="attr_id"></id>
+        <result property="attr_name" column="attr_name"></result>
+        <result property="cat_id" column="cat_id"></result>
+        <result property="attr_sel" column="attr_sel"></result>
+        <result property="attr_write" column="attr_write"></result>
+        <result property="attr_vals" column="attr_vals"></result>
+    </resultMap>
+
+<!--  Attribute getAttributeById(@Param("cid") Integer id,
+                               @Param("aid") Integer attrId,
+                               @Param("sel") String sel);  -->
+    <select id="getAttributeById" resultMap="getAllAttributeByCategoryId">
+        SELECT attr_id,attr_name,cat_id,attr_sel,attr_write,attr_vals
+        FROM sp_attribute
+        WHERE cat_id = #{cid}  AND attr_sel = #{sel}  AND attr_id = #{aid}
+    </select>
+
+<!--  Integer addAttribute(Attribute attribute);  -->
+    <insert id="addAttribute" useGeneratedKeys="true" keyProperty="attr_id">
+        INSERT INTO sp_attribute(cat_id,attr_name,attr_sel
+        <if test="attr_vals != null">
+            ,attr_vals
+        </if>
+        )
+        VALUES(
+            #{cat_id}, #{attr_name}, #{attr_sel}
+            <if test="attr_vals != null">
+                , #{attr_vals}
+            </if>
+        )
+    </insert>
+
+<!--  Integer deleteAttributeById(@Param("cid") Integer cid,
+                                @Param("aid") Integer aid);  -->
+    <delete id="deleteAttributeById">
+        DELETE FROM sp_attribute
+        WHERE cat_id = #{cid}  AND attr_id = #{aid}
+    </delete>
+
+<!--  Integer updateAttributeById(Attribute attribute);  -->
+    <update id="updateAttributeById">
+        UPDATE sp_attribute
+        SET attr_name = #{attr_name} ,
+        attr_sel = #{attr_sel}
+        <if test="attr_vals != null and attr_vals != ''">
+            , attr_vals = #{attr_vals}
+        </if>
+        WHERE attr_id = #{attr_id}  AND cat_id = #{cat_id}
+    </update>
+</mapper>

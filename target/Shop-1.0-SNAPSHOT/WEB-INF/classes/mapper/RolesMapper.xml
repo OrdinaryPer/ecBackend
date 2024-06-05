@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.csoe.dao.RoleDao">
+<!--  Long<Role> getAllRoles();  -->
+    <select id="getAllRoles" resultMap="getAllRoles">
+        SELECT role_id, role_name, role_desc, ps_ids
+        FROM sp_role;
+    </select>
+    <resultMap id="getAllRoles" type="Roles">
+        <id property="role_id" column="role_id"></id>
+        <result property="role_name" column="role_name"></result>
+        <result property="role_desc" column="role_desc"></result>
+        <result property="ps_ids" column="ps_ids"></result>
+    </resultMap>
+
+<!--  Integer insertRole(Role role);  -->
+    <insert id="insertRole" useGeneratedKeys="true" keyProperty="role_id">
+        INSERT INTO sp_role(role_name
+        <if test="role_desc != null and role_desc != ''">
+            , role_desc
+        </if>
+        )
+        VALUES(#{role_name}
+        <if test="role_desc != null and role_desc != ''">
+            , #{role_desc}
+        </if>
+        )
+    </insert>
+
+<!--  Roles getRoleById(@Param("id") Integer id);  -->
+    <select id="getRoleById" resultMap="getRoleById">
+        SELECT role_id, role_name, role_desc, ps_ids
+        FROM sp_role
+        WHERE role_id = #{id}
+    </select>
+    <resultMap id="getRoleById" type="Roles">
+        <id property="role_id" column="role_id"></id>
+        <result property="role_name" column="role_name"></result>
+        <result property="role_desc" column="role_desc"></result>
+        <result property="ps_ids" column="ps_ids"></result>
+    </resultMap>
+
+<!--  Integer updateRoleById(@Param("id") Integer id,
+                           @Param("name") String name,
+                           @Param("desc") String desc);  -->
+    <update id="updateRoleById">
+        UPDATE sp_role
+        SET role_name = #{name}
+        <if test="desc != null and desc != ''">
+            ,
+            role_desc = #{desc}
+        </if>
+        WHERE role_id = #{id}
+    </update>
+
+<!--  Integer removeRoleById(@Param("id") Integer id);  -->
+    <delete id="removeRoleById">
+        DELETE FROM sp_role
+        WHERE role_id = #{id}
+    </delete>
+
+<!--  Integer giveRoleToRight(@Param("id") Integer id,
+                            @Param("rids") String rids);  -->
+    <update id="giveRoleToRight">
+        UPDATE sp_role
+        SET ps_ids = #{rids}
+        WHERE role_id = #{id}
+    </update>
+</mapper>
